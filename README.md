@@ -41,3 +41,5 @@ And the validation result is not satisfying as well.
 <p align="center">
 <img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/loss_val.png" width="360" height="240" title="loss_val"/><img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/acc_val.png" width="360" height="240" title="acc_val"/>
 </p>
+
+Momentum SGD and Adam should be tried after the above mentioned bugs are fixed.
