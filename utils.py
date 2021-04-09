@@ -15,21 +15,21 @@ def aggregate_2(av_t,w,D=8):
         element = max(0,element)
         xv_t_new.append(element)
     return xv_t_new
+
+
+def read_out(xv_T_matrix):
+    # assume xv_T_matrix = [x1_T,x2_T,x3_T...]
+    return np.sum(xv_T_matrix,axis = -2)
+
+def compute_s(A,hG,b):
+    return np.dot(A,hG)+b
+
+def compute_p(s,s_threshold = 500):
+    s = np.clip(s, -s_threshold, s_threshold)
+    return 1.0/(1+np.exp(-s))
+
+def compute_y_hat(p):
     
-def read_out(graph,w,T=2,D=8):
-    xv_t = graph.xv_0
-    n = graph.n
-    for t in range(T):
-        # every time update every v
-        xv_t_new_list = []
-        for v in range(n):
-            av_t = aggregate_1(graph,xv_t,v)
-            xv_t_new_list.append(aggregate_2(av_t,w))
-        xv_t = xv_t_new_list
-    hG = [0]*D
-    for v in range(n):
-        hG = sum_two_list(hG,xv_t[v])
-    return hG
 
 def y_hat(graph,A,b,w):
     hG = read_out(graph,w)

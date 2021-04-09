@@ -66,6 +66,7 @@ def loop_batch(w,A,b,batch,D=8):
         gradient_batch = sum_two_list(gradient_batch,gradient_sample)
         if p == label:
             right_train += 1
+        print(p)
         loss_train += l_no_eta
     #average the batch's gradient
     gradient_batch = [i/batch_size for i in gradient_batch]
@@ -86,8 +87,8 @@ def evaluate(w,A,b,validation):
     return loss/len(validation),right/len(validation)
 
 if __name__ == '__main__':
-    batch_size = 20
-    epochs = 30
+    batch_size = 4
+    epochs = 10
     split = 0.8
     SGD(split,epochs,batch_size,all=100)
 
