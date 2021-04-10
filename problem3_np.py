@@ -112,7 +112,7 @@ def loop_batch(w,A,b,batch,D=8,momentum=False,adam=False,cache=None,adam_cache=N
         adam_t += 1
         adam_cache = (m_pre,v_pre,adam_t)
     else:
-        w,A,b = update_theta(w,A,b,gradient_batch,momentum=momentum,adam=adam,cache=cache)
+        w,A,b = update_theta(w,A,b,gradient_batch,momentum=momentum,cache=cache)
 
     if momentum:
         cache = cache_momentum(gradient_batch,cache)
@@ -141,8 +141,8 @@ def evaluate(w,A,b,validation):
     return loss/len(validation),right/len(validation)
 
 if __name__ == '__main__':
-    batch_size = 4
+    batch_size = 10
     epochs = 30
     split = 0.8
-    SGD(split,epochs,batch_size,all=2000,adam=True)
+    SGD(split,epochs,batch_size,all=2000,momentum=True)
 
