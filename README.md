@@ -47,6 +47,6 @@ These are the results from adam optimizer. (batch_size 10, split 0.8)
 <img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/loss_val_adam.png" width="360" height="240" title="loss_val"/><img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/acc_val_adam.png" width="360" height="240" title="acc_val"/>
 </p>
 Though numpy does not support GPU, it is much faster than simple loop on CPU. In ~/bakup, there is loop version for vector/matrix, and calculus on them. _np are postfix for numpy version. <br>
-
-Bookmark:<br>
+<br>
+**Bookmark**:<br>
 A short survey for Adam and implementation details [here](https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/) 
