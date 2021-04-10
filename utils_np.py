@@ -28,15 +28,22 @@ def compute_y_hat(p):
     result = p > 0.5
     return result.astype(int)
 
-def create_w(D=8):
-    mean, var = 0, 0.4
-    w = np.random.normal(mean, var, [D,D])
+def create_w(mode="gaussian",D=8):
+    if mode == "gaussian":
+        mean, var = 0, 0.4
+        w = np.random.normal(mean, var, [D,D])
+    elif mode == "zero":
+        w = np.zeros([D,D])
     return w
 
-def create_A(D=8):
-    mean = 0
-    var = 0.4
-    return np.random.normal(mean, var, D)
+def create_A(mode="gaussian",D=8):
+    if mode == "gaussian":
+        mean = 0
+        var = 0.4
+        A = np.random.normal(mean, var, D)
+    elif mode == "zero":
+        A = np.zeros(D)
+    return A
 
 def create_b():
     return np.array([0])

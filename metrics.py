@@ -9,3 +9,7 @@ def draw_line_chart(epoch,result_list,title):
     plt.xlabel('epoch')
     plt.ylabel(title)
     plt.savefig(title+".png")
+
+def record_process_batch(i):
+    print('  -> finish batch: ', end='\r')
+    print(str(i), end='\r')

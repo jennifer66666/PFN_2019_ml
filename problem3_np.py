@@ -1,4 +1,5 @@
 from .problem2_np import *
+from .adam_np import *
 import random
 
 def shuffle_and_batches(train,batch_size):
@@ -8,17 +9,25 @@ def shuffle_and_batches(train,batch_size):
         batches.append(shuffle[i*batch_size:(i+1)*batch_size])
     return batches
 
-def SGD(split,epochs,batch_size,D=8,all=2000,momentum=False):
+def SGD(split,epochs,batch_size,D=8,all=2000,momentum=False,adam=False):
     #init theta
     w = create_w()
     A = create_A()
     b = create_b()
+    adam_t = None
     if momentum:
         # momentum is initialized as zero
-        cache_w = create_w()
-        cache_A = create_A()
+        cache_w = create_w(mode="zero")
+        cache_A = create_A(mode="zero")
         cache_b = create_b()
         cache = (cache_w,cache_A,cache_b)
+    if adam:
+        (m_pre_w,m_pre_A,m_pre_b) = (create_w(mode="zero"),create_A(mode="zero"),create_b())
+        m_pre = (m_pre_w,m_pre_A,m_pre_b) 
+        (v_pre_w,v_pre_A,v_pre_b) = (create_w(mode="zero"),create_A(mode="zero"),create_b())
+        v_pre = (v_pre_w,v_pre_A,v_pre_b)
+        adam_t = 0
+        adam_cache = (m_pre,v_pre,adam_t)
     #split train and test
     train = [i for i in range(int(all*split))]
     validation = [i for i in range(int(all*split),all)]
@@ -28,39 +37,46 @@ def SGD(split,epochs,batch_size,D=8,all=2000,momentum=False):
     acc_epochs_val = []
     acc_epochs_train = []
     for epoch in range(epochs):
-        print("Be in epoch "+ str(epoch))
-        one_epoch = loop_epoch(train,validation,batch_size,w,A,b,momentum=momentum,cache=cache)
+        print("Be in epoch "+ str(epoch)+"     ")
+        if momentum:
+            one_epoch = loop_epoch(train,validation,batch_size,w,A,b,momentum=momentum,cache=cache)
+        elif adam:
+            one_epoch = loop_epoch(train,validation,batch_size,w,A,b,adam=adam,adam_cache=adam_cache)
+        else:
+            one_epoch = loop_epoch(train,validation,batch_size,w,A,b)
         loss_epochs_train.append(one_epoch["loss_train"].reshape(1))
         acc_epochs_train.append(one_epoch["acc_train"])
         loss_epochs_val.append(one_epoch["loss_val"].reshape(1))
         acc_epochs_val.append(one_epoch["acc_val"])
         w,A,b = one_epoch["theta"]
         cache = one_epoch["cache"]
+        adam_cache = one_epoch["adam_cache"]
     draw_line_chart(epochs,loss_epochs_val,"loss_val")
     draw_line_chart(epochs,acc_epochs_val,"acc_val")
     draw_line_chart(epochs,loss_epochs_train,"loss_train")
     draw_line_chart(epochs,acc_epochs_train,"acc_train")
     return w,A,b
 
-def loop_epoch(train,validation,batch_size,w,A,b,momentum=False,cache=None):
+def loop_epoch(train,validation,batch_size,w,A,b,momentum=False,adam=False,cache=None,adam_cache=None):
     right_train = 0
     loss_train = 0
     #shuffle and batches
     batches = shuffle_and_batches(train,batch_size)
     #loop batches
     for i,batch in enumerate(batches):
-        one_batch = loop_batch(w,A,b,batch,momentum=momentum,cache=cache)
-        print("finish batch "+str(i))
+        one_batch = loop_batch(w,A,b,batch,momentum=momentum,adam=adam,cache=cache,adam_cache=adam_cache)
+        record_process_batch(i)
         right_train += one_batch["right_train"]
         loss_train += one_batch["loss_train"]
         w,A,b = one_batch["theta"]
         cache = one_batch["cache"]
+        adam_cache = one_batch["adam_cache"]
     # evaluate when every epoch finish
     loss_val,acc_val = evaluate(w,A,b,validation)
     loss_train,acc_train = loss_train/len(train),right_train/len(train)
-    return {"loss_train":loss_train,"acc_train":acc_train,"loss_val":loss_val,"acc_val":acc_val,"theta":(w,A,b),"cache":cache}
+    return {"loss_train":loss_train,"acc_train":acc_train,"loss_val":loss_val,"acc_val":acc_val,"theta":(w,A,b),"cache":cache,"adam_cache":adam_cache}
 
-def loop_batch(w,A,b,batch,D=8,momentum=False,cache=None):
+def loop_batch(w,A,b,batch,D=8,momentum=False,adam=False,cache=None,adam_cache=None):
     right_train = 0
     loss_train = 0
     w_batch = np.zeros([D,D])
@@ -87,10 +103,20 @@ def loop_batch(w,A,b,batch,D=8,momentum=False,cache=None):
     b_batch = b_batch / batch_size
     gradient_batch = (w_batch,A_batch,b_batch)
     #update params
-    w,A,b = update_theta(w,A,b,gradient_batch,momentum=momentum,cache=cache)
+    if adam:
+        m_pre,v_pre,adam_t = adam_cache
+        adam_out = adam_optimizer((w,A,b),gradient_batch,m_pre,v_pre,adam_t)
+        (w,A,b) = adam_out["theta"]
+        m_pre = adam_out["m"]
+        v_pre = adam_out["v"]
+        adam_t += 1
+        adam_cache = (m_pre,v_pre,adam_t)
+    else:
+        w,A,b = update_theta(w,A,b,gradient_batch,momentum=momentum,adam=adam,cache=cache)
+
     if momentum:
         cache = cache_momentum(gradient_batch,cache)
-    return {"right_train":right_train,"loss_train":loss_train,"theta":(w,A,b),"cache":cache}
+    return {"right_train":right_train,"loss_train":loss_train,"theta":(w,A,b),"cache":cache,"adam_cache":adam_cache}
 
 def cache_momentum(gradient_batch,cache,alpha=0.0001,eta=0.9):
     gradient_w,gradient_A,gradient_b = gradient_batch
@@ -115,8 +141,8 @@ def evaluate(w,A,b,validation):
     return loss/len(validation),right/len(validation)
 
 if __name__ == '__main__':
-    batch_size = 10
-    epochs = 40
+    batch_size = 4
+    epochs = 30
     split = 0.8
-    SGD(split,epochs,batch_size,all=2000,momentum=True)
+    SGD(split,epochs,batch_size,all=2000,adam=True)
 
