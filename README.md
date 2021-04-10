@@ -34,10 +34,16 @@ But somehow fails to be optimized when W is initiallized as ones.
 # momentum and Adam should not be turned on together
 python3 -m src.problem3_np
 ```
-It will test problem3 with the hyperparams listed in the task explanation. Loss shows that the training processes properly. Though the average accuracy is not high as 60% in average as claimed in the task paper. Besides, small batch_size helps. The reason may be that there are too few training data, and large batch_size does not support the weights to update enough times (with equal epochs). Notice that the xv_t should not be given back to the graph, otherwise the training fails. 
+It will test problem3 with the hyperparams listed in the task explanation. Loss shows that the training processes properly. Though the average accuracy is not high as 60% in average as claimed in the task paper. Besides, small batch_size helps. The reason may be that there are too few training data, and large batch_size does not support the weights to update enough times (with equal epochs). Notice that the xv_t should not be given back to the graph, otherwise the training fails. <br>
+<br>
+These are the results from momentum SGD optimizer. (batch_size 10, split 0.8)
 <p align="center">
 <img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/loss_train_momentum.png" width="360" height="240" title="loss_train"/><img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/acc_train_momentum.png" width="360" height="240" title="acc_train"/>
 <img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/loss_val_momentum.png" width="360" height="240" title="loss_val"/><img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/acc_val_momentum.png" width="360" height="240" title="acc_val"/>
 </p>
-
+These are the results from adam optimizer. (batch_size 10, split 0.8)
+<p align="center">
+<img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/loss_train_adam.png" width="360" height="240" title="loss_train"/><img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/acc_train_adam.png" width="360" height="240" title="acc_train"/>
+<img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/loss_val_adam.png" width="360" height="240" title="loss_val"/><img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/acc_val_adam.png" width="360" height="240" title="acc_val"/>
+</p>
 Though numpy does not support GPU, it is much faster than simple loop on CPU. In ~/bakup, there is loop version for vector/matrix, and calculus on them. _np are postfix for numpy version.
