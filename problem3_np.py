@@ -26,7 +26,8 @@ def SGD(split,epochs,batch_size,D=8,all=2000,momentum=False,adam=False):
         m_pre = (m_pre_w,m_pre_A,m_pre_b) 
         (v_pre_w,v_pre_A,v_pre_b) = (create_w(mode="zero"),create_A(mode="zero"),create_b())
         v_pre = (v_pre_w,v_pre_A,v_pre_b)
-        adam_t = 0
+        # IMPORTANT: not 0
+        adam_t = 1
         adam_cache = (m_pre,v_pre,adam_t)
     #split train and test
     train = [i for i in range(int(all*split))]
@@ -144,5 +145,5 @@ if __name__ == '__main__':
     batch_size = 10
     epochs = 30
     split = 0.8
-    SGD(split,epochs,batch_size,all=2000,momentum=True)
+    SGD(split,epochs,batch_size,all=2000,adam=True)
 
