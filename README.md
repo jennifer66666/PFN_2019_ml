@@ -1,5 +1,5 @@
 # PFN_2019_ml
-self-test for Preffered Network Internship 2019
+self-test for Preffered Network Internship 2019. <br>
 Task definition and datasets can be found [here](https://github.com/pfnet/intern-coding-tasks/tree/master/2019/machine_learning).
 # part1
 usage
