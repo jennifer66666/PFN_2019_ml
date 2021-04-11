@@ -46,6 +46,9 @@ These are the results from adam optimizer. (batch_size 10, split 0.8)
 <img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/loss_train_adam.png" width="360" height="240" title="loss_train"/><img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/acc_train_adam.png" width="360" height="240" title="acc_train"/>
 <img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/loss_val_adam.png" width="360" height="240" title="loss_val"/><img src="https://github.com/jennifer66666/PFN_2019_ml/blob/master/pics/acc_val_adam.png" width="360" height="240" title="acc_val"/>
 </p>
+
+The validation results tend to jitter more than train results. It is mainly because there is only 400 samples in validation set, while 1600 in train set. The larger the set, the more representative the result. The smaller, the more sensitive to particular samples.<br>
+<br>
 Though numpy does not support GPU, it is much faster than simple loop on CPU. In ~/bakup, there is loop version for vector/matrix, and calculus on them. _np are postfix for numpy version. <br>
 <br>
 
